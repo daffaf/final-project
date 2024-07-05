@@ -1,7 +1,6 @@
 import { IReqOrder } from "@/utils/interface";
-import mongoose from "mongoose";
-import { number } from "yup";
-
+import mongoose, { mongo } from "mongoose";
+import mail from '@/utils/mail/mail'
 const Schema = mongoose.Schema;
 
 const OrderSchema = new Schema(
@@ -47,6 +46,30 @@ const OrderSchema = new Schema(
         timestamps : true,
     }
 )
+OrderSchema.post("save", async function(doc,next){
+    const item = doc
+    console.log(item);
+    const user = await mongoose.model("User").findById(item.createdBy)
+    
+    const content = await mail.render("invoice.ejs",{
+        grandTotal : item.grandTotal,
+        customerName : user.username,
+        orderItems : item.orderItems.map(item => ({
+            name : item.name,
+            quantity : item.qty,
+            price : item.price
+        })),
+        contactEmail : "daffafadila00@gmail.com",
+        companyName : "elescode",
+        year : new Date().getFullYear()
+    })
+    await mail.send({
+        to: user.email,
+        subject : "Order Transaction",
+        content
+    })
 
+    // content = await mail.render("invoice.ejs".{})
+})
 const orderModel = mongoose.model<IReqOrder>("Order", OrderSchema)
 export default orderModel;
