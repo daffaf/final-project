@@ -1,7 +1,7 @@
 # Project Name
 sanbercode-be-57-final-project
 ## Deployment URL
-The application is deployed at: [https://railway.app](https://final-project-express-daffa.up.railway.app/api)
+The application is deployed at: [https://final-project-express-daffa.up.railway.app/api](https://final-project-express-daffa.up.railway.app/api)
 
 ## API Endpoints
 
